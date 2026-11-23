@@ -2,6 +2,12 @@ name: 앱 만들기
 
 on:
   push:
+    branches: [ main ]
+    # 공부 내용(study.html)만 바꾼 경우는 앱이 알아서 받아 가므로 새 APK를 만들지 않아요
+    paths-ignore:
+      - 'study.html'
+      - 'app/src/main/assets/study.html'
+      - 'README.md'
   workflow_dispatch:
 
 permissions:
@@ -12,23 +18,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # 폰에서도 올릴 수 있게: 저장소에 app.zip을 올리면 여기서 풀고, 맨 위의 study.html을 앱 안에 넣어요
+      - name: app.zip 풀기
+        run: |
+          if [ -f app.zip ]; then
+            rm -rf /tmp/z && mkdir -p /tmp/z && unzip -q -o app.zip -d /tmp/z
+            d=$(dirname "$(find /tmp/z -name settings.gradle | head -1)")
+            cp -r "$d"/. .
+          fi
+          if [ -f study.html ]; then cp study.html app/src/main/assets/study.html; fi
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - uses: gradle/actions/setup-gradle@v4
-      - name: 압축 풀고 APK 만들기
+
+      - name: 문제 데이터 만들기
+        run: python3 tools/make_quiz_json.py
+
+      - name: APK 만들기
         run: |
-          ZIP=$(ls *.zip | head -1)
-          unzip -q "$ZIP" -d src
-          cd src/HanguksaQuiz
-          python3 tools/make_quiz_json.py
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
-          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/한국사잠금퀴즈-v1.${{ github.run_number }}.apk"
-      - uses: softprops/action-gh-release@v2
+
+      - name: 파일 이름 정리
+        run: cp app/build/outputs/apk/release/app-release.apk 한국사잠금퀴즈-v1.${{ github.run_number }}.apk
+
+      - name: 릴리스로 올리기
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
           name: 한국사 잠금퀴즈 v1.${{ github.run_number }}
-          body: 아래 Assets에서 APK를 눌러 받아 설치하세요.
+          body: 아래 Assets에서 APK를 눌러 받아 설치하세요. 기존 앱 위에 덮어써져요.
           files: 한국사잠금퀴즈-v1.${{ github.run_number }}.apk
