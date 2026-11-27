@@ -514,7 +514,7 @@ button { font: inherit; }
 
 body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .top { background: var(--bar, var(--paper)); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--rule); box-shadow: none; }
-.top-in { gap: 8px; padding: 6px 14px 10px; }
+.top-in { --px: 14px; gap: 8px; padding: 6px var(--px) 10px; grid-template-columns: minmax(0, 1fr); }
 .appbar { display: flex; align-items: center; gap: 4px; min-height: 42px; margin: 0 -6px; }
 .appbar .back, .mini .back, .minibar .back { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: 0; padding: 0; border: 0;
   border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -534,6 +534,16 @@ body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .tabs button::before, .mtabs button::before { content: none !important; }
 .tabs button:active, .mtabs button:active { transform: scale(.97); }
 .tabrow { display: block; }
+/* 위 막대의 탭은 한 줄로. 넘치면 옆으로 밀어서 보고, 가려진 쪽 끝은 흐리게 */
+.top .tabs, .top .mtabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; margin: -4px calc(-1 * var(--px, 14px)) -8px; padding: 4px var(--px, 14px) 8px; --fl: 0px; --fr: 0px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); }
+.top .tabs::-webkit-scrollbar, .top .mtabs::-webkit-scrollbar { display: none; }
+.top .tabrow { min-width: 0; }
+.top .tabs button, .top .mtabs button { flex: 0 0 auto; }
+.top .tabs.fade-l, .top .mtabs.fade-l { --fl: 30px; }
+.top .tabs.fade-r, .top .mtabs.fade-r { --fr: 30px; }
 
 /* 도구 버튼: 테두리 대신 연한 바탕 */
 .tools { gap: 6px; }
@@ -6891,7 +6901,7 @@ body.tb-on .scroll { overflow-x: auto; }
 
 body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .top { background: var(--bar, var(--paper)); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--rule); box-shadow: none; }
-.top-in { gap: 8px; padding: 6px 14px 10px; }
+.top-in { --px: 14px; gap: 8px; padding: 6px var(--px) 10px; grid-template-columns: minmax(0, 1fr); }
 .appbar { display: flex; align-items: center; gap: 4px; min-height: 42px; margin: 0 -6px; }
 .appbar .back, .mini .back, .minibar .back { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: 0; padding: 0; border: 0;
   border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -6911,6 +6921,16 @@ body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .tabs button::before, .mtabs button::before { content: none !important; }
 .tabs button:active, .mtabs button:active { transform: scale(.97); }
 .tabrow { display: block; }
+/* 위 막대의 탭은 한 줄로. 넘치면 옆으로 밀어서 보고, 가려진 쪽 끝은 흐리게 */
+.top .tabs, .top .mtabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; margin: -4px calc(-1 * var(--px, 14px)) -8px; padding: 4px var(--px, 14px) 8px; --fl: 0px; --fr: 0px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); }
+.top .tabs::-webkit-scrollbar, .top .mtabs::-webkit-scrollbar { display: none; }
+.top .tabrow { min-width: 0; }
+.top .tabs button, .top .mtabs button { flex: 0 0 auto; }
+.top .tabs.fade-l, .top .mtabs.fade-l { --fl: 30px; }
+.top .tabs.fade-r, .top .mtabs.fade-r { --fr: 30px; }
 
 /* 도구 버튼: 테두리 대신 연한 바탕 */
 .tools { gap: 6px; }
@@ -7902,6 +7922,33 @@ body { position: relative; background-color: var(--desk); background-image: var(
   function edge() { body.classList.toggle('scrolled', sc.scrollTop > 2); }
   sc.addEventListener('scroll', edge, { passive: true });
   edge();
+})();
+(function () {
+  /* 위 막대의 탭 줄: 고른 탭이 보이게 가운데로 밀고, 가려진 쪽 끝만 흐리게 */
+  [].slice.call(document.querySelectorAll('.top .tabs, .top .mtabs')).forEach(function (row) {
+    function fades() {
+      var max = row.scrollWidth - row.clientWidth;
+      row.classList.toggle('fade-l', max > 1 && row.scrollLeft > 1);
+      row.classList.toggle('fade-r', max > 1 && row.scrollLeft < max - 1);
+    }
+    function show(smooth) {
+      var b = row.querySelector('[aria-selected="true"], [aria-pressed="true"]'), max = row.scrollWidth - row.clientWidth;
+      if (b && max > 1) {
+        var rr = row.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        var left = Math.max(0, Math.min(max, Math.round(row.scrollLeft + rb.left - rr.left - (rr.width - rb.width) / 2)));
+        if (Math.abs(left - row.scrollLeft) > 1) {
+          try { row.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' }); } catch (e) { row.scrollLeft = left; }
+        }
+      }
+      fades();
+    }
+    row.addEventListener('scroll', fades, { passive: true });
+    if (window.MutationObserver) new MutationObserver(function () { show(true); })
+      .observe(row, { subtree: true, attributes: true, attributeFilter: ['aria-selected', 'aria-pressed'] });
+    if (window.ResizeObserver) new ResizeObserver(function () { show(false); }).observe(row);
+    window.addEventListener('resize', function () { show(false); });
+    show(false);
+  });
 })();</sa-script>
 </body>
 </html>
@@ -8166,7 +8213,7 @@ footer p{margin:0}
 
 body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .top { background: var(--bar, var(--paper)); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--rule); box-shadow: none; }
-.top-in { gap: 8px; padding: 6px 14px 10px; }
+.top-in { --px: 14px; gap: 8px; padding: 6px var(--px) 10px; grid-template-columns: minmax(0, 1fr); }
 .appbar { display: flex; align-items: center; gap: 4px; min-height: 42px; margin: 0 -6px; }
 .appbar .back, .mini .back, .minibar .back { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: 0; padding: 0; border: 0;
   border-radius: 12px; background: transparent; color: var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -8186,6 +8233,16 @@ body { font-family: var(--sans); background: var(--desk); color: var(--ink); }
 .tabs button::before, .mtabs button::before { content: none !important; }
 .tabs button:active, .mtabs button:active { transform: scale(.97); }
 .tabrow { display: block; }
+/* 위 막대의 탭은 한 줄로. 넘치면 옆으로 밀어서 보고, 가려진 쪽 끝은 흐리게 */
+.top .tabs, .top .mtabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; margin: -4px calc(-1 * var(--px, 14px)) -8px; padding: 4px var(--px, 14px) 8px; --fl: 0px; --fr: 0px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--fl), #000 calc(100% - var(--fr)), transparent); }
+.top .tabs::-webkit-scrollbar, .top .mtabs::-webkit-scrollbar { display: none; }
+.top .tabrow { min-width: 0; }
+.top .tabs button, .top .mtabs button { flex: 0 0 auto; }
+.top .tabs.fade-l, .top .mtabs.fade-l { --fl: 30px; }
+.top .tabs.fade-r, .top .mtabs.fade-r { --fr: 30px; }
 
 /* 도구 버튼: 테두리 대신 연한 바탕 */
 .tools { gap: 6px; }
@@ -11162,6 +11219,33 @@ window.addEventListener('pagehide', () => { if (syncTimer) pushNow(); });
   function edge() { body.classList.toggle('scrolled', sc.scrollTop > 2); }
   sc.addEventListener('scroll', edge, { passive: true });
   edge();
+})();
+(function () {
+  /* 위 막대의 탭 줄: 고른 탭이 보이게 가운데로 밀고, 가려진 쪽 끝만 흐리게 */
+  [].slice.call(document.querySelectorAll('.top .tabs, .top .mtabs')).forEach(function (row) {
+    function fades() {
+      var max = row.scrollWidth - row.clientWidth;
+      row.classList.toggle('fade-l', max > 1 && row.scrollLeft > 1);
+      row.classList.toggle('fade-r', max > 1 && row.scrollLeft < max - 1);
+    }
+    function show(smooth) {
+      var b = row.querySelector('[aria-selected="true"], [aria-pressed="true"]'), max = row.scrollWidth - row.clientWidth;
+      if (b && max > 1) {
+        var rr = row.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        var left = Math.max(0, Math.min(max, Math.round(row.scrollLeft + rb.left - rr.left - (rr.width - rb.width) / 2)));
+        if (Math.abs(left - row.scrollLeft) > 1) {
+          try { row.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' }); } catch (e) { row.scrollLeft = left; }
+        }
+      }
+      fades();
+    }
+    row.addEventListener('scroll', fades, { passive: true });
+    if (window.MutationObserver) new MutationObserver(function () { show(true); })
+      .observe(row, { subtree: true, attributes: true, attributeFilter: ['aria-selected', 'aria-pressed'] });
+    if (window.ResizeObserver) new ResizeObserver(function () { show(false); }).observe(row);
+    window.addEventListener('resize', function () { show(false); });
+    show(false);
+  });
 })();</en-script>
 </body>
 </html>
@@ -11330,6 +11414,33 @@ window.addEventListener('pagehide', () => { if (syncTimer) pushNow(); });
   function edge() { body.classList.toggle('scrolled', sc.scrollTop > 2); }
   sc.addEventListener('scroll', edge, { passive: true });
   edge();
+})();
+(function () {
+  /* 위 막대의 탭 줄: 고른 탭이 보이게 가운데로 밀고, 가려진 쪽 끝만 흐리게 */
+  [].slice.call(document.querySelectorAll('.top .tabs, .top .mtabs')).forEach(function (row) {
+    function fades() {
+      var max = row.scrollWidth - row.clientWidth;
+      row.classList.toggle('fade-l', max > 1 && row.scrollLeft > 1);
+      row.classList.toggle('fade-r', max > 1 && row.scrollLeft < max - 1);
+    }
+    function show(smooth) {
+      var b = row.querySelector('[aria-selected="true"], [aria-pressed="true"]'), max = row.scrollWidth - row.clientWidth;
+      if (b && max > 1) {
+        var rr = row.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        var left = Math.max(0, Math.min(max, Math.round(row.scrollLeft + rb.left - rr.left - (rr.width - rb.width) / 2)));
+        if (Math.abs(left - row.scrollLeft) > 1) {
+          try { row.scrollTo({ left: left, behavior: smooth ? 'smooth' : 'auto' }); } catch (e) { row.scrollLeft = left; }
+        }
+      }
+      fades();
+    }
+    row.addEventListener('scroll', fades, { passive: true });
+    if (window.MutationObserver) new MutationObserver(function () { show(true); })
+      .observe(row, { subtree: true, attributes: true, attributeFilter: ['aria-selected', 'aria-pressed'] });
+    if (window.ResizeObserver) new ResizeObserver(function () { show(false); }).observe(row);
+    window.addEventListener('resize', function () { show(false); });
+    show(false);
+  });
 })();</script>
 </body>
 </html>
