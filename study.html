@@ -4,9 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>한국사2 II·III단원 공부</title>
-<script>try { var __t = JSON.parse(localStorage.getItem('app-theme') || 'null'); if (__t === 'light' || __t === 'dark') document.documentElement.setAttribute('data-theme', __t); } catch (e) {}</script>
-<script>window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
+<script>(function () {
+  /* 앱 안에서는 공부 기록(localStorage)의 사본을 앱 저장소에도 둔다. WebView 저장소가 비어도 다시 채워서 기록이 남게 */
+  var W = window, B = null, ls = null;
+  try { B = W.AppBridge || (W.parent !== W ? W.parent.AppBridge : null); } catch (e) {}
+  if (!B || typeof B.storeSet !== 'function' || typeof B.storeGet !== 'function') return;
+  try { ls = W.localStorage; if (!ls) return; ls.getItem('x'); } catch (e) { return; }
+  if (W.parent === W) {
+    try {
+      var raw = B.storeGet();
+      if (raw) {
+        var snap = JSON.parse(raw);
+        Object.keys(snap).forEach(function (k) { if (typeof snap[k] === 'string' && ls.getItem(k) !== snap[k]) ls.setItem(k, snap[k]); });
+      }
+    } catch (e) {}
+  }
+  var timer = 0, last = null;
+  function save() {
+    if (timer) { clearTimeout(timer); timer = 0; }
+    try {
+      var o = {};
+      for (var i = 0; i < ls.length; i++) { var k = ls.key(i); o[k] = ls.getItem(k); }
+      var t = JSON.stringify(o);
+      if (t !== last) { last = t; B.storeSet(t); }
+    } catch (e) {}
+  }
+  function soon() { if (!timer) timer = setTimeout(save, 400); }
+  var P = W.Storage && W.Storage.prototype;
+  if (P && !P.__appMirror) {
+    P.__appMirror = 1;
+    ['setItem', 'removeItem', 'clear'].forEach(function (m) {
+      var f = P[m];
+      P[m] = function () { var r = f.apply(this, arguments); if (this === ls) soon(); return r; };
+    });
+  }
+  W.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') save(); });
+  if (W.parent === W) { W.__appSave = save; setTimeout(save, 1500); }
+})();
+window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
 window.__scTop = function (el) { return el.getBoundingClientRect().top + window.__topInset(); };</script>
+<script>try { var __t = JSON.parse(localStorage.getItem('app-theme') || 'null'); if (__t === 'light' || __t === 'dark') document.documentElement.setAttribute('data-theme', __t); } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap">
@@ -391,6 +429,11 @@ button { font: inherit; }
 }
 .mini-nav { display: flex; gap: 4px; }
 .mini .mini-open { margin-left: auto; color: var(--paper); background: var(--ink); border-color: var(--ink); }
+
+.tb-b:not(.open)::before { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; border-radius: 2px;
+  background: rgba(94, 92, 230, .24); pointer-events: none; }
+.tb-o { z-index: 2; border: 1.5px solid rgba(70, 68, 205, .92); }
+.tb-b.open .tb-o { border: 1.5px solid rgba(200, 28, 22, .88); }
 
 .tq-q { white-space: pre-line; }
 .tq-ask { margin: 2px 0 10px; font-size: 13px; color: var(--ink-soft); }
@@ -6614,7 +6657,45 @@ button.hw:active { transform: scale(.98); }
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>통합사회2 기말 공부</title>
-<script>window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
+<script>(function () {
+  /* 앱 안에서는 공부 기록(localStorage)의 사본을 앱 저장소에도 둔다. WebView 저장소가 비어도 다시 채워서 기록이 남게 */
+  var W = window, B = null, ls = null;
+  try { B = W.AppBridge || (W.parent !== W ? W.parent.AppBridge : null); } catch (e) {}
+  if (!B || typeof B.storeSet !== 'function' || typeof B.storeGet !== 'function') return;
+  try { ls = W.localStorage; if (!ls) return; ls.getItem('x'); } catch (e) { return; }
+  if (W.parent === W) {
+    try {
+      var raw = B.storeGet();
+      if (raw) {
+        var snap = JSON.parse(raw);
+        Object.keys(snap).forEach(function (k) { if (typeof snap[k] === 'string' && ls.getItem(k) !== snap[k]) ls.setItem(k, snap[k]); });
+      }
+    } catch (e) {}
+  }
+  var timer = 0, last = null;
+  function save() {
+    if (timer) { clearTimeout(timer); timer = 0; }
+    try {
+      var o = {};
+      for (var i = 0; i < ls.length; i++) { var k = ls.key(i); o[k] = ls.getItem(k); }
+      var t = JSON.stringify(o);
+      if (t !== last) { last = t; B.storeSet(t); }
+    } catch (e) {}
+  }
+  function soon() { if (!timer) timer = setTimeout(save, 400); }
+  var P = W.Storage && W.Storage.prototype;
+  if (P && !P.__appMirror) {
+    P.__appMirror = 1;
+    ['setItem', 'removeItem', 'clear'].forEach(function (m) {
+      var f = P[m];
+      P[m] = function () { var r = f.apply(this, arguments); if (this === ls) soon(); return r; };
+    });
+  }
+  W.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') save(); });
+  if (W.parent === W) { W.__appSave = save; setTimeout(save, 1500); }
+})();
+window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
 window.__scTop = function (el) { return el.getBoundingClientRect().top + window.__topInset(); };</sa-script>
 <style>
 :root {
@@ -6863,6 +6944,11 @@ body.tb-on .scroll { overflow-x: auto; }
 .tbt-more { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 .tbt-more .lab { font-size: 12px; font-weight: 800; color: var(--ink-soft); }
 .tb-prog { font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.tb-b:not(.open)::before { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; border-radius: 2px;
+  background: rgba(36, 160, 80, .24); pointer-events: none; }
+.tb-o { z-index: 2; border: 1.5px solid rgba(18, 112, 50, .92); }
+.tb-b.open .tb-o { border: 1.5px solid rgba(200, 28, 22, .88); }
 
 :root, :root[data-theme="light"] { --desk: #E8EBF3; --paper: #FFFFFF; --ink: #000000; --ink-soft: #5E5E66; --line: rgba(60, 60, 67, .22); --rule: rgba(60, 60, 67, .13);
   --tint: rgba(118, 118, 128, .11); --band: #17803A; --band-ink: #FFFFFF; --pen: #D70015; --pen-tint: rgba(255, 59, 48, .10);
@@ -7959,7 +8045,45 @@ body { position: relative; background-color: var(--desk); background-image: var(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>영어 단어 · VOCA 1800 Day 46–60</title>
-<script>window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
+<script>(function () {
+  /* 앱 안에서는 공부 기록(localStorage)의 사본을 앱 저장소에도 둔다. WebView 저장소가 비어도 다시 채워서 기록이 남게 */
+  var W = window, B = null, ls = null;
+  try { B = W.AppBridge || (W.parent !== W ? W.parent.AppBridge : null); } catch (e) {}
+  if (!B || typeof B.storeSet !== 'function' || typeof B.storeGet !== 'function') return;
+  try { ls = W.localStorage; if (!ls) return; ls.getItem('x'); } catch (e) { return; }
+  if (W.parent === W) {
+    try {
+      var raw = B.storeGet();
+      if (raw) {
+        var snap = JSON.parse(raw);
+        Object.keys(snap).forEach(function (k) { if (typeof snap[k] === 'string' && ls.getItem(k) !== snap[k]) ls.setItem(k, snap[k]); });
+      }
+    } catch (e) {}
+  }
+  var timer = 0, last = null;
+  function save() {
+    if (timer) { clearTimeout(timer); timer = 0; }
+    try {
+      var o = {};
+      for (var i = 0; i < ls.length; i++) { var k = ls.key(i); o[k] = ls.getItem(k); }
+      var t = JSON.stringify(o);
+      if (t !== last) { last = t; B.storeSet(t); }
+    } catch (e) {}
+  }
+  function soon() { if (!timer) timer = setTimeout(save, 400); }
+  var P = W.Storage && W.Storage.prototype;
+  if (P && !P.__appMirror) {
+    P.__appMirror = 1;
+    ['setItem', 'removeItem', 'clear'].forEach(function (m) {
+      var f = P[m];
+      P[m] = function () { var r = f.apply(this, arguments); if (this === ls) soon(); return r; };
+    });
+  }
+  W.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') save(); });
+  if (W.parent === W) { W.__appSave = save; setTimeout(save, 1500); }
+})();
+window.__topInset = function () { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-h')) || 0; };
 window.__scTop = function (el) { return el.getBoundingClientRect().top + window.__topInset(); };</en-script>
 <style>
 :root, :root[data-theme="light"] { --desk: #E8EBF3; --paper: #FFFFFF; --ink: #000000; --ink-soft: #5E5E66; --line: rgba(60, 60, 67, .22); --rule: rgba(60, 60, 67, .13);
