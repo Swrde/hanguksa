@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # 폰에서도 올릴 수 있게: 저장소에 app.zip을 올리면 여기서 풀고, 맨 위의 study.html을 앱 안에 넣어요
       - name: app.zip 풀기
@@ -29,12 +29,12 @@ jobs:
           fi
           if [ -f study.html ]; then cp study.html app/src/main/assets/study.html; fi
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: 문제 데이터 만들기
         run: python3 tools/make_quiz_json.py
@@ -53,7 +53,7 @@ jobs:
           cat version.json
 
       - name: 릴리스로 올리기
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v1.${{ github.run_number }}
           name: 한국사 잠금퀴즈 v1.${{ github.run_number }}
