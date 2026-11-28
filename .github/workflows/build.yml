@@ -45,12 +45,20 @@ jobs:
           ./gradlew assembleRelease --no-daemon
 
       - name: 파일 이름 정리
-        run: cp app/build/outputs/apk/release/app-release.apk 한국사잠금퀴즈-v1.${{ github.run_number }}.apk
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk studynote-v1.${{ github.run_number }}.apk
+          # 앱이 새 버전을 알아보는 파일 (앱 안에서 바로 업데이트할 때 써요)
+          printf '{"code":%s,"name":"1.%s","tag":"v1.%s","apk":"studynote-v1.%s.apk"}\n' \
+            ${{ github.run_number }} ${{ github.run_number }} ${{ github.run_number }} ${{ github.run_number }} > version.json
+          cat version.json
 
       - name: 릴리스로 올리기
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
           name: 한국사 잠금퀴즈 v1.${{ github.run_number }}
-          body: 아래 Assets에서 APK를 눌러 받아 설치하세요. 기존 앱 위에 덮어써져요.
-          files: 한국사잠금퀴즈-v1.${{ github.run_number }}.apk
+          body: 앱을 열면 새 버전을 알려 주고 앱 안에서 바로 업데이트돼요. 처음 한 번만 아래 Assets에서 APK를 받아 설치하세요.
+          make_latest: true
+          files: |
+            studynote-v1.${{ github.run_number }}.apk
+            version.json
