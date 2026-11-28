@@ -1767,7 +1767,7 @@ button.hw:active { transform: scale(.98); }
 <div class="box "><p>제5조 2. 다음 농지는 적당한 보상으로 정부가 사들인다. (가) 농가가 아닌 사람의 농지 (나) 직접 농사짓지 않는 사람의 농지 (다) 3정보를 넘는 부분의 농지</p><p class="src">- 1949년 6월 공포</p></div><div class="bogi"><p class="bogi-t">&lt;보 기&gt;</p><ul><li><b>ㄱ.</b> 유상 매수·유상 분배 방식으로 실시되었다.</li><li><b>ㄴ.</b> 농지 외에 산림과 임야도 분배 대상에 넣었다.</li><li><b>ㄷ.</b> 6·25 전쟁 직전부터 시행되어 지주·소작제가 거의 사라졌다.</li><li><b>ㄹ.</b> 분배받은 농민은 아무 대가도 내지 않았다.</li></ul></div>
 <div class="ch grid" role="group" aria-label="10번 선택지"><button type="button" class="c" data-v="1" aria-pressed="false"><span class="cn" aria-label="1번">1</span><span class="ct">ㄱ, ㄴ</span></button><button type="button" class="c" data-v="2" aria-pressed="false"><span class="cn" aria-label="2번">2</span><span class="ct">ㄱ, ㄷ</span></button><button type="button" class="c" data-v="3" aria-pressed="false"><span class="cn" aria-label="3번">3</span><span class="ct">ㄴ, ㄷ</span></button><button type="button" class="c" data-v="4" aria-pressed="false"><span class="cn" aria-label="4번">4</span><span class="ct">ㄴ, ㄹ</span></button><button type="button" class="c" data-v="5" aria-pressed="false"><span class="cn" aria-label="5번">5</span><span class="ct">ㄷ, ㄹ</span></button></div>
 <div class="foot"><span class="verdict" aria-live="polite"></span><button type="button" class="chk">정답 확인</button></div>
-<div class="exp" hidden><p class="ans-line">정답 <b>②</b></p><p>자료는 <b>농지 개혁법</b>(1949)이다. 경자유전의 원칙에 따라 유상 매수·유상 분배로 실시되었고, 6·25 전쟁 직전부터 시행되어 지주·소작제가 거의 사라졌다.<br>ㄴ 농지가 아닌 토지는 개혁 대상에서 빠졌다. ㄹ 농민은 수확량의 일부를 몇 해에 걸쳐 나누어 내야 했다.</p></div>
+<div class="exp" hidden><p class="ans-line">정답 <b>②</b></p><p>자료는 1949년 6월 공포된 <b>농지 개혁</b>의 법령이다. 경자유전의 원칙에 따라 유상 매수·유상 분배로 실시되었고, 6·25 전쟁 직전부터 시행되어 지주·소작제가 거의 사라졌다.<br>ㄴ 농지가 아닌 토지는 개혁 대상에서 빠졌다. ㄹ 농민은 수확량의 일부를 몇 해에 걸쳐 나누어 내야 했다.</p></div>
 </article>
 </section>
 <section class="grp">
@@ -11050,11 +11050,21 @@ function pPool() {
 /* ---------- question builders ---------- */
 
 function meaningKeys(m) {
+  // 1) 쉼표로 나눈 조각 통째로 ('묘사하다' → '묘사'), [ ]는 또 하나의 뜻으로 ('검토[조사]' → 검토, 조사)
+  // 2) 여러 낱말로 된 조각은 낱말마다도 ('구성 요소' → 요소, '잡초를 뽑다' → 잡초, 뽑다). 흔한 말(있는·주다 등)은 빼요
   const out = new Set();
-  const body = String(m).replace(/\([^)]*\)/g, ' ').replace(/(^|\s)(n|v|a|ad|adv|prep|conj|pron|int)\.\s*/g, ',');
-  for (const part of body.split(/[,;\/·]/)) { const t = part.trim().replace(/(하다|되다|스러운|적인|적|한|하는|의)$/, '').trim(); if (t.length >= 2) out.add(t); }
+  const body = String(m).replace(/\([^)]*\)/g, ' ').replace(/\[/g, ',').replace(/\]/g, '').replace(/(^|\s)(n|v|a|ad|adv|prep|conj|pron|int)\.\s*/g, ',');
+  for (const part of body.split(/[,;\/·]/)) {
+    const t = part.trim().replace(/(하다|되다|시키다|스러운|적인|적|한|하는|의)$/, '').trim(); if (t.length >= 2) out.add(t);
+    const ws = part.trim().split(/\s+/); if (ws.length < 2) continue;
+    for (const w of ws) {
+      let k = w.replace(/(하다|되다|시키다|스러운|적인|하는|되는|적|한|된|의|을|를|은|는|으로|로|에게|에)$/, ''); if (k.length < 2) k = w;
+      if (k.length >= 2 && /[가-힣]/.test(k) && !MK_STOP.has(k) && !MK_STOP.has(w)) out.add(k);
+    }
+  }
   return out;
 }
+const MK_STOP = new Set(['있는','없는','않은','주다','주는','하는','하게','등','아주','좋은','여기다','만들다','보여','하다','되다','것','수','일','사람','매우','잘','더','크게','다른','같은','많은','시설']);
 function keysOf(w) { if (!w._keys) w._keys = meaningKeys(w.meaning); return w._keys; }
 function overlaps(a, b) { const kb = keysOf(b); for (const k of keysOf(a)) if (kb.has(k)) return true; return false; }
 function makeOptions(w) {
