@@ -977,6 +977,80 @@ button.hw:active { transform: scale(.98); }
   color: var(--h-ink); font: inherit; font-size: 15px; color-scheme: light dark; }
 .wn .dd-row .clr { grid-column: 2; justify-self: end; min-height: 30px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: var(--h-soft);
   font: inherit; font-size: 13px; cursor: pointer; }
+
+/* ── 아래 메뉴 (홈 · 랭킹 · 계정) ── */
+.home > .home-in { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+.home > .home-in[hidden] { display: none; }
+.bnav { position: fixed; z-index: 8; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  width: min(340px, calc(100% - 32px)); box-sizing: border-box; display: flex; gap: 2px; padding: 5px; border-radius: 999px;
+  background: rgba(255, 255, 255, .62); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 0 0 1px rgba(255, 255, 255, .7), 0 10px 30px rgba(16, 24, 48, .16), 0 1px 2px rgba(16, 24, 48, .06);
+  -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); --n-on: rgba(118, 118, 128, .14); --n-ink: #3C3C43; --n-sel: #5E5CE6; }
+.bnav button { flex: 1 1 0; min-width: 0; min-height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  margin: 0; padding: 4px 0; border: 0; border-radius: 999px; background: transparent; color: var(--n-ink); font: inherit; font-size: 11px; font-weight: 600;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color .2s, color .2s, transform .15s; }
+.bnav button:active { transform: scale(.95); }
+.bnav button[aria-current="page"] { background: var(--n-on); color: var(--n-sel); }
+.bnav svg { display: block; }
+@media (prefers-color-scheme: dark) {
+:where(:root:not([data-theme="light"])) .bnav { background: rgba(40, 40, 48, .58); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 10px 30px rgba(0, 0, 0, .45);
+    --n-on: rgba(255, 255, 255, .12); --n-ink: #D1D1D6; --n-sel: #A9A7FF; }
+}
+:where(:root[data-theme="dark"]) .bnav { background: rgba(40, 40, 48, .58); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 10px 30px rgba(0, 0, 0, .45);
+    --n-on: rgba(255, 255, 255, .12); --n-ink: #D1D1D6; --n-sel: #A9A7FF; }
+
+/* ── 랭킹 ── */
+.rk-me { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; color: var(--h-ink); }
+.rk-me .rm-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.rk-me .rm-l { display: block; font-size: 13px; font-weight: 600; color: var(--h-soft); }
+.rk-me .rm-no { font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.rk-me .rm-no small { font-size: 15px; font-weight: 500; color: var(--h-soft); }
+.rk-me .rm-s { text-align: right; font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; color: var(--l-ks); font-variant-numeric: tabular-nums; }
+.rk-me .rm-s small { font-size: 15px; font-weight: 500; color: var(--h-soft); }
+.rk-bars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rk-bars div { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--h-soft); }
+.rk-bars b { color: var(--h-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rk-bars i { display: block; height: 6px; border-radius: 999px; background: var(--h-track); overflow: hidden; }
+.rk-bars i u { display: block; height: 100%; border-radius: inherit; }
+.rk-bars [data-k="ks"] u { background: var(--r-ks); } .rk-bars [data-k="sa"] u { background: var(--r-sa); } .rk-bars [data-k="en"] u { background: var(--r-en); }
+.rk-card { padding: 14px 10px 10px; color: var(--h-ink); }
+.rk-top { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 6px; }
+.rk-top h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.rk-re { min-height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--h-fill); box-shadow: inset 0 0 0 1px var(--h-fill-rim); color: var(--h-ink);
+  font: inherit; font-size: 13px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.rk-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.rk-row { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 8px; border-radius: 16px; }
+.rk-row + .rk-row::before { content: ''; position: absolute; left: 52px; right: 8px; top: 0; height: .5px; background: var(--h-rule); }
+.rk-row.me { background: rgba(94, 92, 230, .14); }
+.rk-row.me::before, .rk-row.me + .rk-row::before { display: none; }
+.rk-no { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums;
+  background: var(--h-track); color: var(--h-ink); }
+.rk-row[data-p="1"] .rk-no { background: #FFCC00; color: #5C4300; }
+.rk-row[data-p="2"] .rk-no { background: #C7C7CC; color: #3A3A3C; }
+.rk-row[data-p="3"] .rk-no { background: #E0A26B; color: #4D2B0C; }
+.rk-nm { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rk-nm b { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk-nm b em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--l-ks); margin-left: 4px; }
+.rk-nm small { font-size: 12px; color: var(--h-soft); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-s { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rk-s small { font-size: 12px; font-weight: 500; color: var(--h-soft); }
+.rk-msg { margin: 0; padding: 14px 8px 10px; font-size: 14px; line-height: 1.5; color: var(--h-soft); text-align: center; word-break: keep-all; }
+.rk-msg button { display: block; margin: 10px auto 0; min-height: 42px; padding: 0 18px; border: 0; border-radius: 14px; background: rgba(94, 92, 230, .92); color: #fff;
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.rk-how { margin: 0; padding: 0 6px; font-size: 12.5px; line-height: 1.5; color: var(--h-soft); word-break: keep-all; }
+/* ── 계정 ── */
+#v-acct .home-acct { flex-direction: row; align-items: center; gap: 12px; }
+#v-acct .home-acct[hidden], .ac-note[hidden] { display: none; }
+#v-acct .home-acct .hw-i { flex: none; }
+#v-acct .home-acct .hw-x { flex: 1 1 auto; min-width: 0; }
+#v-acct .home-acct .hw-s { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#v-acct .home-acct .hgo { flex: none; }
+.ac-note { margin: 0; padding: 16px 18px; font-size: 14px; color: var(--h-soft); }
+.ac-name .ac-row { display: flex; gap: 8px; }
+.ac-name input { flex: 1 1 auto; min-width: 0; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: var(--h-fill);
+  box-shadow: inset 0 0 0 1px var(--h-fill-rim); color: var(--h-ink); font: inherit; font-size: 16px; }
+.ac-name #rk-save { flex: none; min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: rgba(94, 92, 230, .92); color: #fff; font: inherit;
+  font-size: 15px; font-weight: 600; cursor: pointer; }
+.ac-name .hw-s { font-size: 13px; color: var(--h-soft); }
 </style>
 </head>
 <body class="lv1">
@@ -5818,9 +5892,27 @@ button.hw:active { transform: scale(.98); }
 <div class="hwid">
 <button type="button" class="glass hw home-set" id="home-set" hidden><span class="hw-i"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><span class="hw-x"><span class="hw-t">잠금화면 문제</span><span class="hw-s">과목, 범위, 얼마나 자주</span></span></button>
 <div class="glass hw home-mode" role="group" aria-labelledby="hm-l"><span class="hw-i"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></span><span class="hw-t" id="hm-l">화면</span><div class="hm-seg"><button type="button" data-theme-set="auto" aria-pressed="true">자동</button><button type="button" data-theme-set="light" aria-pressed="false">라이트</button><button type="button" data-theme-set="dark" aria-pressed="false">다크</button></div></div>
+</div>
+</div>
+<div class="home-in hv" id="v-rank" data-view="rank" hidden>
+<header class="home-h"><p class="home-d">시험 범위 진도가 높은 순서</p><h2 class="home-t">랭킹</h2></header>
+<section class="glass rk-me" id="rk-me"></section>
+<section class="glass rk-card"><div class="rk-top"><h3>전체 순위</h3><button type="button" class="rk-re" id="rk-re">새로 고침</button></div><div id="rk-box"></div></section>
+<p class="rk-how">점수는 한국사·통합사회·영어 진도 %를 똑같이 합친 값이에요. 공부하면 저절로 올라가요.</p>
+</div>
+<div class="home-in hv" id="v-acct" data-view="acct" hidden>
+<header class="home-h"><p class="home-d">로그인과 랭킹 이름</p><h2 class="home-t">계정</h2></header>
 <button type="button" class="glass hw home-acct" id="home-acct" hidden><span class="hw-i"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg></span><span class="hw-x"><span class="hw-t" id="ha-t">계정</span><span class="hw-s" id="ha-s">로그인하면 기기끼리 기록이 이어져요</span></span><span class="hgo"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<p class="glass ac-note" id="ac-note" hidden>계정과 랭킹은 휴대폰 앱에서 쓸 수 있어요.</p>
+<section class="glass hw ac-name"><span class="hw-i"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/></svg></span><label class="hw-t" for="rk-name">랭킹에 보일 이름</label>
+<div class="ac-row"><input id="rk-name" maxlength="12" autocomplete="off" placeholder="비워 두면 '친구'로 보여요"><button type="button" id="rk-save">저장</button></div>
+<span class="hw-s" id="rk-saved">12자까지 쓸 수 있어요. 진짜 이름 말고 별명도 좋아요.</span></section>
 </div>
-</div>
+<nav class="bnav" id="bnav" aria-label="아래 메뉴">
+<button type="button" data-nav="home" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5H15v-6h-6v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg><span>홈</span></button>
+<button type="button" data-nav="rank" aria-current="false"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6H4.5a3 3 0 0 0 3 4M16.5 6h3a3 3 0 0 1-3 4"/><path d="M12 13.5V17M8.5 20.5h7M9.5 17h5v3.5h-5z"/></svg><span>랭킹</span></button>
+<button type="button" data-nav="acct" aria-current="false"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg><span>계정</span></button>
+</nav>
 </div>
 <div class="home wn" id="wn" role="dialog" aria-modal="true" aria-labelledby="wn-t" hidden>
 <div class="wn-head"><button type="button" class="wn-x" data-wn-close aria-label="닫기"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><h2 class="wn-t" id="wn-t">오답 노트</h2></div>
@@ -11920,6 +12012,7 @@ window.__enApply = function (ev) {
     var pct = ps.length ? ps.reduce(function (a, p) { return a + Math.min(1, p[0] / p[1]); }, 0) / ps.length : 0;
     ring('ar-' + k, { ks: 49, sa: 36, en: 23 }[k], pct);
     ring('mr-' + k, 13, pct);
+    (window.__pct = window.__pct || {})[k] = pct;
     var v = doc.getElementById('rv-' + k), u = doc.getElementById('ru-' + k);
     if (v) v.textContent = Math.round(pct * 100);
     if (u) u.textContent = '%';
@@ -11965,6 +12058,7 @@ window.__enApply = function (ev) {
     if (Array.isArray(wr) && wr.length) ep.push('오답 노트 ' + em(wr.length) + '개');
     setStat('en', ep.length ? ep.join('<span class="gap"></span>') : null);
     try { if (window.__wnPaint) window.__wnPaint(); } catch (e) {}
+    try { if (window.__rankPush) window.__rankPush(); } catch (e) {}
   }
   function paintHome() {
     var d = new Date(), wd = '일월화수목금토';
@@ -12004,6 +12098,7 @@ window.__enApply = function (ev) {
   // 휴대폰 뒤로가기: 열린 창 닫기 → 과목에서 홈으로 → 홈이면 false (앱이 처리)
   window.appBack = function () {
     try { if (window.__wnBack && window.__wnBack()) return true; } catch (e) {}
+    try { if (!home.hidden && window.__navBack && window.__navBack()) return true; } catch (e) {}
     if (!home.hidden) return false;
     for (var k in W) {
       if (!W[k].wrap.hidden) {
@@ -12439,6 +12534,128 @@ window.__enApply = function (ev) {
   window.__wnPaint();
   // 홈이 이 코드보다 먼저 그려졌으면 D-day 줄(하루 분량)이 빠져 있으니 한 번 더 그려요
   try { if (window.__homePaint) window.__homePaint(); } catch (e) {}
+})();
+</script>
+<script>
+(function () {
+  var doc = document, home = doc.getElementById('home'), nav = doc.getElementById('bnav');
+  if (!home || !nav) return;
+  var B = window.AppBridge, cur = 'home', tm = null, last = null;
+  var views = { home: home.querySelector('.home-in:not(.hv)'), rank: doc.getElementById('v-rank'), acct: doc.getElementById('v-acct') };
+  var TITLE = { home: '서진이의 공부노트', rank: '랭킹', acct: '계정' };
+  var bar = home.querySelector('.home-bar span');
+  function get(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+  function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function canRank() { return !!(B && typeof B.rankLoad === 'function' && typeof B.rankSubmit === 'function'); }
+  function nick() { var n = get('rank-name', ''); return typeof n === 'string' ? n.trim().slice(0, 12) : ''; }
+  function today() { var d = new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); }
+  function pc(v) { return Math.max(0, Math.min(100, Math.round((v || 0) * 100))); }
+  // 내 점수: 세 과목 진도 %의 평균
+  function mine() {
+    var p = window.__pct || {};
+    return { s: Math.round(((p.ks || 0) + (p.sa || 0) + (p.en || 0)) / 3 * 1000) / 10, d: { ks: pc(p.ks), sa: pc(p.sa), en: pc(p.en) } };
+  }
+  function push(force) {
+    if (!canRank()) return;
+    var m = mine(), key = m.s + '|' + nick() + '|' + today();
+    if (!force && get('rank-sent', '') === key) return;
+    try { B.rankSubmit(nick(), m.s, JSON.stringify(m.d)); put('rank-sent', key); } catch (e) {}
+  }
+  // 진도가 바뀔 때마다 (홈을 그릴 때) 불러요. 잠깐 모았다가 한 번만 올려요
+  window.__rankPush = function () { clearTimeout(tm); tm = setTimeout(function () { push(false); }, 1500); };
+
+  function bars(d) {
+    return '<div class="rk-bars">' + [['ks', '한국사'], ['sa', '통합사회'], ['en', '영어']].map(function (x) {
+      var v = Math.max(0, Math.min(100, +((d || {})[x[0]]) || 0));
+      return '<div data-k="' + x[0] + '"><span>' + x[1] + ' <b>' + v + '%</b></span><i><u style="width:' + v + '%"></u></i></div>';
+    }).join('') + '</div>';
+  }
+  function paintMe() {
+    var m = mine(), no = '<span class="rm-l">내 점수</span>';
+    if (last && last.myNo) no = '<span class="rm-l">내 순위</span><span class="rm-no">' + last.myNo + '<small>위 / ' + last.n + '명</small></span>';
+    doc.getElementById('rk-me').innerHTML = '<div class="rm-top"><div>' + no + '</div><div class="rm-s">' + m.s.toFixed(1) + '<small>점</small></div></div>' + bars(m.d);
+  }
+  function msg(code) {
+    var t = {
+      loading: '순위를 불러오는 중이에요…',
+      web: '랭킹은 휴대폰 앱에서 볼 수 있어요.',
+      old: '앱을 새로 업데이트하면 랭킹을 볼 수 있어요.',
+      login: '로그인하면 친구들과 순위를 겨룰 수 있어요.',
+      rules: '랭킹 서버 설정이 아직 안 됐어요. 조금 뒤에 다시 해 주세요.',
+      network: '인터넷 연결을 확인하고 새로 고침을 눌러 주세요.',
+      server: '지금은 랭킹 서버에 닿지 않아요. 조금 뒤에 다시 해 주세요.'
+    }[code] || '순위를 불러오지 못했어요.';
+    var btn = code === 'login' && B && typeof B.openAccount === 'function' ? '<button type="button" data-rk-login>로그인하러 가기</button>' : '';
+    doc.getElementById('rk-box').innerHTML = '<p class="rk-msg" data-code="' + code + '">' + t + btn + '</p>';
+  }
+  function render(list, me) {
+    var a = [], m = mine(), seen = false;
+    if (list && typeof list === 'object') for (var id in list) {
+      var e = list[id]; if (!e || typeof e !== 'object' || typeof e.s !== 'number') continue;
+      var x = { id: id, n: String(e.n || '친구').slice(0, 20), s: e.s, d: e.d, t: +e.t || 0 };
+      if (id === me) { x.s = m.s; x.d = m.d; x.n = nick() || x.n; seen = true; }
+      a.push(x);
+    }
+    if (me && !seen) a.push({ id: me, n: nick() || '나', s: m.s, d: m.d, t: Date.now() });
+    a.sort(function (p, q) { return q.s - p.s || p.t - q.t; });
+    var no = 0, prev = null;
+    a.forEach(function (x, i) { if (x.s !== prev) { no = i + 1; prev = x.s; } x.no = no; });
+    last = { n: a.length, myNo: 0 };
+    a.forEach(function (x) { if (x.id === me) last.myNo = x.no; });
+    paintMe();
+    if (!a.length) { doc.getElementById('rk-box').innerHTML = '<p class="rk-msg">아직 아무도 없어요. 첫 번째가 되어 보세요!</p>'; return; }
+    doc.getElementById('rk-box').innerHTML = '<ol class="rk-list">' + a.slice(0, 100).map(function (x) {
+      var d = x.d || {};
+      return '<li class="rk-row' + (x.id === me ? ' me' : '') + '" data-p="' + x.no + '"><span class="rk-no">' + x.no + '</span>'
+        + '<span class="rk-nm"><b>' + esc(x.n) + (x.id === me ? '<em>나</em>' : '') + '</b><small>한국사 ' + (+d.ks || 0) + '% · 사회 ' + (+d.sa || 0) + '% · 영어 ' + (+d.en || 0) + '%</small></span>'
+        + '<span class="rk-s">' + x.s.toFixed(1) + '<small>점</small></span></li>';
+    }).join('') + '</ol>';
+  }
+  window.__rankGot = function (js) {
+    var r = null; try { r = typeof js === 'string' ? JSON.parse(js) : js; } catch (e) {}
+    if (!r || r.error || !r.ok) { last = null; paintMe(); msg((r && r.error) || 'server'); return; }
+    render(r.list, r.me);
+  };
+  function loadRank() {
+    paintMe();
+    if (!canRank()) { msg(B ? 'old' : 'web'); return; }
+    push(true); msg('loading');
+    try { B.rankLoad(); } catch (e) { msg('server'); }
+  }
+  // ── 계정 화면 ──
+  function paintAcct() {
+    var has = !!doc.getElementById('home-acct') && !doc.getElementById('home-acct').hidden;
+    doc.getElementById('ac-note').hidden = has;
+    doc.getElementById('rk-name').value = nick();
+    try { if (window.__acctPaint) window.__acctPaint(); } catch (e) {}
+  }
+  doc.getElementById('rk-save').addEventListener('click', function () {
+    var v = doc.getElementById('rk-name').value.trim().slice(0, 12);
+    put('rank-name', v); doc.getElementById('rk-name').value = v;
+    doc.getElementById('rk-saved').textContent = v ? '저장했어요. 랭킹에 ‘' + v + '’(으)로 보여요.' : '저장했어요. 랭킹에 ‘친구’로 보여요.';
+    push(true);
+    try { if (window.__appSave) window.__appSave(); } catch (e) {}
+  });
+  // ── 화면 바꾸기 ──
+  function show(v) {
+    if (!views[v]) v = 'home';
+    cur = v;
+    for (var k in views) if (views[k]) views[k].hidden = k !== v;
+    [].forEach.call(nav.querySelectorAll('[data-nav]'), function (b) { b.setAttribute('aria-current', b.getAttribute('data-nav') === v ? 'page' : 'false'); });
+    if (bar) bar.textContent = TITLE[v];
+    home.scrollTop = 0; home.classList.remove('scrolled');
+    if (v === 'rank') loadRank();
+    else if (v === 'acct') paintAcct();
+    else if (window.__homePaint) window.__homePaint();
+  }
+  window.__navShow = show;
+  window.__navBack = function () { if (cur === 'home') return false; show('home'); return true; };
+  nav.addEventListener('click', function (e) { var b = e.target.closest('[data-nav]'); if (b) show(b.getAttribute('data-nav')); });
+  home.addEventListener('click', function (e) {
+    if (e.target.closest('#rk-re')) loadRank();
+    else if (e.target.closest('[data-rk-login]')) { try { B.openAccount(); } catch (x) {} }
+  });
 })();
 </script>
 <script>(function () {
